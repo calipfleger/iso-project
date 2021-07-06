@@ -97,11 +97,12 @@ def densification(Tavg,bdot,rhos,z):#,model='hljohnsen'):
         # Aslak Grinsted, University of Copenhagen 2010
         # Adapted Sylvia Dee, Brown University, 2017
     '''
+
     import numpy as np
     import scipy
     from scipy import integrate
     import matplotlib.pyplot as plt
-    
+
     rhoi=920. 
     rhoc=550.
     #rhoc=822.
@@ -115,7 +116,7 @@ def densification(Tavg,bdot,rhos,z):#,model='hljohnsen'):
     #Herron-Langway with Johnsen et al 2000 corrections.
     #Small corrections to HL model which are not in Arthern et al. 2010 
 
-    c0=0.85*11*(bdot/rhow)*np.exp(-10160./(R*Tavg))
+    c0=np.float64(0.85*11*(bdot/rhow)*np.exp(-10160./(R*Tavg)))
     c1=1.15*575*np.sqrt(bdot/rhow)*np.exp(-21400./(R*Tavg))
 
     k0=c0/bdot ##~g4
@@ -141,7 +142,7 @@ def densification(Tavg,bdot,rhos,z):#,model='hljohnsen'):
     q[dnix]=np.exp(k1*rhoi*(z[dnix]-zc)+np.log(rhoc/(rhoi-rhoc))) #g7
     q[upix]=np.exp(k0*rhoi*z[upix]+np.log(rhos/(rhoi-rhos))) #g7
 
-    rho[numerical]=q*rhoi/(1+q) #[g8]
+    rho[numerical]=q[numerical]*rhoi/(1+q[numerical]) #[g8]
     rho[blowup]=rhoi
 
     #only calculate this if you want zieq
@@ -246,12 +247,13 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
     # Set to 915 to be safe.
     solidice=np.where(rho>=rho_d-5.0)
     diffusion=np.where(rho<rho_d-5.0)
+    diff_dim = len(diffusion[0])
 
     sigma_sqrd_dummy = 2*np.power(rho,2)*dtdrho*D*drho
     sigma_sqrd= integrate.cumtrapz(sigma_sqrd_dummy)
     rho=rho[0:-1]
     sigma=np.zeros((len(rho)+1))
-    sigma[diffusion] = np.sqrt(1/np.power(rho,2)*sigma_sqrd)
+    sigma[diffusion] = (np.sqrt(1/np.power(rho,2)*sigma_sqrd))[0:diff_dim]
     #sigma[solidice]=np.nanmax(sigma) #max diffusion length in base of core // set in a better way. max(sigma)
     sigma[solidice]=sigma[diffusion][-1]
     sigma=sigma[0:-1]
