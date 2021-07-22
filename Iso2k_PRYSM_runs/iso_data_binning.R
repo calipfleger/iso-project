@@ -2,10 +2,10 @@ library(geoChronR)
 
 #### Bin data ####
 # Bin monthly SST
-setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs")
+setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data")
 ssta_m = read.csv("SSTA_M.csv", head = F)
 start = 1851
-end = 1951
+end = 1981
 time = seq(from = start, to = end, by = 1/12)
 ssta_m = as.vector(unlist(ssta_m))
 binvec =  seq(from = start, to = end, by = 1)
@@ -19,10 +19,10 @@ binned_ann_recs = geoChronR::bin(thisrec$year, thisrec$val, binvec)
 write.csv(binned_ann_recs, "ssta_binned.csv")
 
 # Bin monthly sss
-setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs")
+setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data")
 sssa_m = read.csv("SSSA_M.csv", head = F)
 start = 1851
-end = 1951
+end = 1981
 time = seq(from = start, to = end, by = 1/12)
 sssa_m = as.vector(unlist(sssa_m))
 binvec =  seq(from = start, to = end, by = 1)

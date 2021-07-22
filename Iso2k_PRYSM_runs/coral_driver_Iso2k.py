@@ -19,7 +19,7 @@ from psm.aux_functions.analytical_err_simple import analytical_err_simple
 #Data directory
 datadir='./data/'
 
-df = pd.read_csv(datadir + 'iso_data_coral_aafEdits.csv', sep = ',')
+df = pd.read_csv(datadir + 'iso_data_coral_1850-1980.csv', sep = ',')
 sst = np.array(df["SST"])
 # Load SST anomalies [K] (NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!)
 # yearly
@@ -40,13 +40,13 @@ sssa = np.array(df_sss_a["y"])
 # monthly
 sssa_m = np.array(df["SSS"])
 # Export monthly data
-#sssa_m = pd.DataFrame(sssa_m) 
-#sssa_m.to_csv(datadir+"SSSA_M.csv", index = False, header = False)
+sssa_m = pd.DataFrame(sssa_m) 
+sssa_m.to_csv(datadir+"SSSA_M.csv", index = False, header = False)
 
 # set time axis
 step = 1
 start = 1851
-stop = 1951
+stop = 1981
 num = (stop-start)*step
 time=np.linspace(start, stop, num = num, endpoint = False)
 
