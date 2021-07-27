@@ -37,7 +37,7 @@ bermuda = bermuda[[1]] # This is the d18O subset
 # Plot raw proxy data
 plot(bermuda$year, bermuda$paleoData_values, type = "l",
      ylab = bermuda$paleoData_units, xlab = bermuda$yearUnits,
-     main = bermuda$geo_siteName)
+     main = bermuda$geo_siteName, xlim = c(1880, 1950), frame.plot = F)
 
 #### Bin proxy data ####
 start = 1851
@@ -103,3 +103,67 @@ plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
 cor = cor.test(coral, coral_obs)
 plot(coral, coral_obs, pch = 16, xlab = "Modeled SST pseudo-coral",
      ylab = "Observed SST pseudo-coral", main = c("r = 0.133", "p = 0.13"))
+
+cor = cor.test(coral_obs, binned_proxy$y)
+plot(coral_obs, binned_proxy$y, pch = 16, xlab = "Observed SST pseudo-coral",
+     ylab = "Proxy Data", main = c("r = 0.133", "p = 0.13"))
+
+#### Map proxy locations ####
+# Define archive point types
+shapes = c("Coral" = 15, "GlacierIce" = 20, "Sclerosponge" = 19, "Wood" = 18,
+           "LakeSediment" = 17, "Speleothem" = 17, "MolluskShells" = 19,
+           "MarineSediment" = 8)
+
+coral_loc = matrix(NA, 1, 3) %>%
+        set_colnames(c("archive", "lat", "lon"))
+coral_loc[1] = bermuda$archiveType
+coral_loc[2] = bermuda$geo_latitude
+coral_loc[3] = bermuda$geo_longitude
+coral_loc = as.data.frame(coral_loc) %>%
+        mutate_at(c("lat", "lon"), as.numeric)
+
+ggplot() +
+        geom_polygon(data = wrld_simpl, aes(x = long, y = lat, group = group), 
+                     fill = "grey", colour = "black", alpha = 0.2) +
+        geom_point(data = coral_loc, mapping = aes(x = lon, y = lat, 
+                                                    shape = archive), color = "black", size = 7) +        
+        geom_point(data = coral_loc, mapping = aes(x = lon, y = lat, 
+                                                    shape = archive, color = "blue"), size = 5) +
+        scale_shape_manual(values = shapes) +  
+        # Removes Axes and labels
+        scale_x_continuous(breaks = NULL) +
+        scale_y_continuous(breaks = NULL) +
+        xlab("") + 
+        ylab("") +
+        # Change theme to remove axes and ticks
+        theme(panel.background = element_blank(),
+              axis.ticks=element_blank(),
+              panel.border = element_blank(),
+              panel.grid.major = element_blank())
+
+#
+#### Full data stack ####
+par(mfrow = c(3, 1), omi = c(0.5, 0.3, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
+plot(sss$x, sss$y, type = "l", frame.plot = F, xlab = "", xaxt = "n",
+     ylab = "iCESM Salinity (PSU)", xpd = NA, lwd = 2,
+     cex.lab = 2, cex.axis = 1.5, main = "")
+plot(sst$x, sst_c, type = "l", frame.plot = F, xaxt = "n", xlab = "", lwd = 2,
+     ylab = "iCESM Temp (C)", xpd = NA, main = "", 
+     cex.lab = 2, cex.axis = 1.5)
+plot(sst_obs$x, sst_obs$y, type = "l", frame.plot = F, xlab = "Year (CE)",
+     ylab = "COBE-SST2 Temp (C)", xpd = NA, lwd = 2, ylim = c(22, 24), 
+     cex.lab = 2, cex.axis = 1.5)
+
+par(mfrow = c(3, 1), omi = c(0.5, 0.3, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
+# modeled
+plot(time, coral, type = "l", frame.plot = F, ylab = "Pseudo-coral (modeled)",
+     xaxt = "n", xlab = "", xpd = NA, lwd = 2,
+     main = "", cex.lab = 2, cex.axis = 1.5)
+# observed
+plot(time, coral_obs, type = "l", frame.plot = F, xaxt = "n",
+     ylab = "Pseudo-coral (obs)", xlab = "", xpd = NA,
+     lwd = 2, cex.lab = 2, cex.axis = 1.5)
+# Proxy
+plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
+     ylab = "Proxy data (permil)", xlab = "Year (CE)", xpd = NA,
+     lwd = 2, cex.lab = 2, cex.axis = 1.5)
