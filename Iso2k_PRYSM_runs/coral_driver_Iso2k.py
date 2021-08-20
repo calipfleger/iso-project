@@ -17,31 +17,31 @@ from psm.aux_functions.analytical_err_simple import analytical_err_simple
 #====================================================================
 
 #Data directory
-datadir='./data/'
+datadir='./data/KUBE/KUBE_afedits/'
 
-df = pd.read_csv(datadir + 'iso_data_coral_1850-1980.csv', sep = ',')
-sst = np.array(df["SST"])
+df = pd.read_csv(datadir + 'KUBE_1_afedit.csv', sep = ',')
+sst = np.array(df["TS"])
 # Load SST anomalies [K] (NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!)
 # yearly
-df_sst_a = pd.read_csv(datadir + 'ssta_binned.csv', sep = ',')
+df_sst_a = pd.read_csv(datadir + 'ssta_KUBE1_binned.csv', sep = ',')
 ssta = np.array(df_sst_a["y"])
 
 # monthly
-ssta_m = np.array(df["SST"])
+ssta_m = np.array(df["TS"])
 # Export monthly data
 ssta_m = pd.DataFrame(ssta_m)
-ssta_m.to_csv(datadir+"SSTA_M.csv", index = False, header = False)
+ssta_m.to_csv(datadir+"SSTA_KUBE1_M.csv", index = False, header = False)
 
 # Load SSS anomalies [psu] (NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!)
 # yearly
-df_sss_a = pd.read_csv(datadir + 'sssa_binned.csv', sep = ',')
+df_sss_a = pd.read_csv(datadir + 'ssta_KUBE1_binned.csv', sep = ',')
 sssa = np.array(df_sss_a["y"])
 
 # monthly
-sssa_m = np.array(df["SSS"])
+sssa_m = np.array(df["SALT"])
 # Export monthly data
 sssa_m = pd.DataFrame(sssa_m) 
-sssa_m.to_csv(datadir+"SSSA_M.csv", index = False, header = False)
+sssa_m.to_csv(datadir+"SSSA_KUBE1_M.csv", index = False, header = False)
 
 # set time axis
 step = 1
@@ -120,9 +120,9 @@ coral_Xn=analytical_error(X,sigma)
 # Save coral timeseries fields as numpy arrays in current directory.
 outdir = './results/'
 print('Saving time series...')
-np.save(outdir + "simulated_coral_d18O.npy", coral)
-np.save(outdir + "coral_age_perturbed.npy", Xp)
+np.save(outdir + "KUBE1_coral_d18O.npy", coral)
+np.save(outdir + "KUBE1_coral_age_perturbed.npy", Xp)
 coral = pd.DataFrame(coral)
-coral.to_csv(outdir+"pseudocoral.csv", index = False, header = False)
+coral.to_csv(outdir+"KUBE1_pseudocoral.csv", index = False, header = False)
 #coral_error_bounds=np.save('coral_error.npy',coral_upper, coral_lower)
 #====================================================================

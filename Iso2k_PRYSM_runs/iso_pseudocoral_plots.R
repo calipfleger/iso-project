@@ -1,17 +1,17 @@
 library(geoChronR)
 
 # Import iCESM and observational data
-setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data")
-sst = read.csv("ssta_binned.csv", head = T)
-sss = read.csv("sssa_binned.csv", head = T)
-sst_obs = read.csv("binned_BermudaSST.csv", head = T)
+setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data/KUBE/KUBE_afedits")
+sst = read.csv("ssta_KUBE1_binned.csv", head = T)
+sss = read.csv("sssa_KUBE1_binned.csv", head = T)
+#sst_obs = read.csv("binned_BermudaSST.csv", head = T)
 
 # Import PRYSM pseudocoral result
 setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/results")
-coral = read.csv("pseudocoral.csv", head = F)
+coral = read.csv("KUBE1_pseudocoral.csv", head = F)
 coral = as.vector(unlist(coral))
-coral_obs = read.csv("pseudocoral_obs.csv", head = F)
-coral_obs = as.vector(unlist(coral_obs))
+#coral_obs = read.csv("pseudocoral_obs.csv", head = F)
+#coral_obs = as.vector(unlist(coral_obs))
 
 # Time dimension
 start = 1851
@@ -56,9 +56,9 @@ plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
 #### Plot modeled SST and SSS data ####
 par(mfrow = c(2, 1), omi = c(0.7, 0.4, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
 plot(sst$x, sst_c, type = "l", frame.plot = F, xaxt = "n", xlab = "", lwd = 2,
-     ylab = "Temp (C)", xpd = NA, main = "iCESM Full Forcing Lat:32.5 Lon:-64.7")
+     ylab = "SST (C)", xpd = NA, main = "KUBE1 Lat:32.5 Lon:-64.7")
 plot(sss$x, sss$y, type = "l", frame.plot = F, xlab = "Year (CE)",
-     ylab = "Salinity (PSU)", xpd = NA, lwd = 2)
+     ylab = "SSS (PSU)", xpd = NA, lwd = 2)
 
 #### Plot modeled and observed SST ####
 par(mfrow = c(2, 1), omi = c(0.7, 0.4, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
@@ -71,18 +71,18 @@ plot(sst_obs$x, sst_obs$y, type = "l", frame.plot = F, xlab = "Year (CE)",
 #### Plot pseudo and binned proxy ####
 par(mfrow = c(2, 1), omi = c(0.7, 0.4, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
 # Pseudo
-plot(time, coral, type = "l", frame.plot = F, ylab = "Pseudo-coral",
+plot(time, coral, type = "l", frame.plot = F, ylab = "KUBE1 Pseudo-coral",
      xaxt = "n", xlab = "", xpd = NA, lwd = 2,
-     main = bermuda$geo_siteName)
+     main = "KUBE1 Lat:32.5 Lon:-64.7")
 # Proxy
 plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
      ylab = "Proxy data (permil)", xlab = bermuda$yearUnits, xpd = NA,
      lwd = 2)
 
 #### Plot correlations ####
-cor = cor.test(coral, binned_proxy$y)
+(cor = cor.test(coral, binned_proxy$y))
 plot(coral, binned_proxy$y, pch = 16, xlab = "Pseudo-coral",
-     ylab = "Proxy Data", main = c("r = 0.033", "p = 0.71"))
+     ylab = "Proxy Data", main = c("r = -0.18", "p = 0.04"))
 
 #### Plot modeled and obs psuedo ####
 par(mfrow = c(3, 1), omi = c(0.7, 0.4, 0, 0), mai = c(0.2, 0.5, 0.2, 0))

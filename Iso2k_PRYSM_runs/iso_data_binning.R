@@ -2,8 +2,8 @@ library(geoChronR)
 
 #### Bin data ####
 # Bin monthly SST
-setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data")
-ssta_m = read.csv("SSTA_M.csv", head = F)
+setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data/KUBE/KUBE_afedits")
+ssta_m = read.csv("KUBE_1_afedit.csv", head = T)[3]
 start = 1851
 end = 1981
 time = seq(from = start, to = end, by = 1/12)
@@ -16,11 +16,10 @@ thisrec = na.omit(data.frame(year = time, val = ssta_m))
 
 binned_ann_recs = geoChronR::bin(thisrec$year, thisrec$val, binvec)
 
-write.csv(binned_ann_recs, "ssta_binned.csv")
+write.csv(binned_ann_recs, "ssta_KUBE1_binned.csv")
 
 # Bin monthly sss
-setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data")
-sssa_m = read.csv("SSSA_M.csv", head = F)
+sssa_m = read.csv("KUBE_1_afedit.csv", head = T)[2]
 start = 1851
 end = 1981
 time = seq(from = start, to = end, by = 1/12)
@@ -33,4 +32,4 @@ thisrec = na.omit(data.frame(year = time, val = sssa_m))
 
 binned_ann_recs = geoChronR::bin(thisrec$year, thisrec$val, binvec)
 
-write.csv(binned_ann_recs, "sssa_binned.csv")
+write.csv(binned_ann_recs, "sssa_KUBE1_binned.csv")
