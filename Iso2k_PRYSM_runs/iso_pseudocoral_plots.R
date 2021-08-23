@@ -1,14 +1,14 @@
 library(geoChronR)
 
-# Import iCESM and observational data
-setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data/KUBE/KUBE_afedits")
-sst = read.csv("ssta_KUBE2_binned.csv", head = T)
-sss = read.csv("sssa_KUBE2_binned.csv", head = T)
+#### Import iCESM and observational data ####
+setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data/iCESM_full_forcing_afedits")
+sst = read.csv("ssta_LIRAiM_binned.csv", head = T)
+sss = read.csv("sssa_LIRAiM_binned.csv", head = T)
 #sst_obs = read.csv("binned_BermudaSST.csv", head = T)
 
 # Import PRYSM pseudocoral result
 setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/results")
-coral = read.csv("KUBE2_pseudocoral.csv", head = F)
+coral = read.csv("LIRAiM_pseudocoral.csv", head = F)
 coral = as.vector(unlist(coral))
 #coral_obs = read.csv("pseudocoral_obs.csv", head = F)
 #coral_obs = as.vector(unlist(coral_obs))
@@ -19,7 +19,7 @@ end = 1980
 time = seq(from = start, to = end, by = 1)
 
 # Plot pseudocoral TS
-plot(time, coral, type = "l", frame.plot = F, ylab = "pseudo-coral")
+#plot(time, coral, type = "l", frame.plot = F, ylab = "pseudo-coral")
 
 # Convert model temps
 sst_c = sst$y - 273.15
@@ -31,7 +31,7 @@ load("iso2k1_0_0.RData")
 rm(D, TS)
 # Apply geoChronR function to extract primary TS
 bermuda = sTS[which(pullTsVariable(sTS, 
-                                      variable = "dataSetName") == "CO05KUBE")]
+                                      variable = "dataSetName") == "CO04LIRA")]
 bermuda = bermuda[[1]] # This is the d18O subset
 
 # Plot raw proxy data
@@ -39,6 +39,7 @@ plot(bermuda$year, bermuda$paleoData_values, type = "l",
      ylab = bermuda$paleoData_units, xlab = bermuda$yearUnits,
      main = bermuda$geo_siteName, xlim = c(1880, 1950), frame.plot = F)
 
+#
 #### Bin proxy data ####
 start = 1851
 end = 1981
@@ -54,14 +55,22 @@ plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
      main = bermuda$geo_siteName)
 
 #### Full data stack ####
+# Create location name variables
+kube = "KUBEiM Lat:32.467, Lon:-64.7"
+swbb = "SWBBiM Lat:25.3903, lon:-80.1715"
+nump = "NUPMiM Lat:5.87 Lon:-162.13"
+copm = "COPMiM Lat:5.87, Lon:-162.13"
+bofp = "iBOFP Lat:-17.5, Lon:-149.83"
+lira = "iLIRA Lat:-21.24, Lon:-159.83"
+
 par(mfrow = c(4, 1), omi = c(0.5, 0.3, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
 # SST
 plot(sst$x, sst_c, type = "l", frame.plot = F, xaxt = "n", xlab = "", lwd = 2,
-     ylab = "CESM SST (C)", xpd = NA, main = "KUBE2 Lat:32.467, Lon:-64.7", 
+     ylab = "iCESM SST (C)", xpd = NA, main = lira, 
      cex.lab = 1.5, cex.axis = 1.5)
 # SSS
 plot(sss$x, sss$y, type = "l", frame.plot = F, xlab = "", xaxt = "n",
-     ylab = "CESM SSS (PSU)", xpd = NA, lwd = 2,
+     ylab = "iCESM SSS (PSU)", xpd = NA, lwd = 2,
      cex.lab = 1.5, cex.axis = 1.5, main = "")
 # Modeled
 plot(time, coral, type = "l", frame.plot = F, ylab = "Pseudo-coral (modeled)",
@@ -75,7 +84,7 @@ plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
 #### Plot pseudo vs. proxy correlation ####
 (cor = cor.test(coral, binned_proxy$y))
 plot(coral, binned_proxy$y, pch = 16, xlab = "Pseudo-coral",
-     ylab = "Proxy Data", main = c("r = 0.09", "p = 0.31"))
+     ylab = "Proxy Data", main = c("r = 0.10", "p = 0.25"))
 
 #
 ##############################################################################
@@ -144,7 +153,8 @@ shapes = c("Coral" = 15, "GlacierIce" = 20, "Sclerosponge" = 19, "Wood" = 18,
            "LakeSediment" = 17, "Speleothem" = 17, "MolluskShells" = 19,
            "MarineSediment" = 8)
 
-proxy = c("KUBE" = 15, "KUBE" = 20, "KIPR" = 18)
+#proxy = c("KUBE" = 15, "KUBE" = 20, "KIPR" = 18)
+proxy = rep(15, 6)
 
 setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data")
 coral_loc = read.csv("coral_proxy_locations.csv", head = T)
@@ -155,14 +165,14 @@ ggplot() +
         geom_point(data = coral_loc, mapping = aes(x = lon, y = lat, 
                                                     shape = archive), color = "blue", size = 7) +
         scale_shape_manual(values = proxy) + 
-        geom_textbox(data = coral_loc, aes(x = lon, y = lat, label = archive),
-                  hjust = -0.25, cex = 4, box.padding = unit(c(0,0,0,0), 'pt')) +
+        geom_text(data = coral_loc, aes(x = lon, y = lat, label = archive),
+                  hjust = -0.3, cex = 4) +
         # Removes Axes and labels
         scale_x_continuous(breaks = NULL) +
         scale_y_continuous(breaks = NULL) +
         xlab("") + 
         ylab("") +
-        coord_equal(xlim = c(-100, 20), ylim = c(0, 60)) +
+        coord_equal(xlim = c(-180, 0), ylim = c(-90, 90)) +
         # Change theme to remove axes and ticks
         theme(panel.background = element_blank(),
               axis.ticks=element_blank(),
