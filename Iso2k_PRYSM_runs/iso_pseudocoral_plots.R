@@ -2,13 +2,13 @@ library(geoChronR)
 
 #### Import iCESM and observational data ####
 setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data/iCESM_full_forcing_afedits")
-sst = read.csv("ssta_LIRAiM_binned.csv", head = T)
-sss = read.csv("sssa_LIRAiM_binned.csv", head = T)
+sst = read.csv("ssta_BOFPiM_binned.csv", head = T)
+sss = read.csv("sssa_BOFPiM_binned.csv", head = T)
 #sst_obs = read.csv("binned_BermudaSST.csv", head = T)
 
 # Import PRYSM pseudocoral result
 setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/results")
-coral = read.csv("LIRAiM_pseudocoral.csv", head = F)
+coral = read.csv("BOFPiM_pseudocoral.csv", head = F)
 coral = as.vector(unlist(coral))
 #coral_obs = read.csv("pseudocoral_obs.csv", head = F)
 #coral_obs = as.vector(unlist(coral_obs))
@@ -31,7 +31,7 @@ load("iso2k1_0_0.RData")
 rm(D, TS)
 # Apply geoChronR function to extract primary TS
 bermuda = sTS[which(pullTsVariable(sTS, 
-                                      variable = "dataSetName") == "CO04LIRA")]
+                                      variable = "dataSetName") == "CO98BOFP")]
 bermuda = bermuda[[1]] # This is the d18O subset
 
 # Plot raw proxy data
@@ -58,15 +58,15 @@ plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
 # Create location name variables
 kube = "KUBEiM Lat:32.467, Lon:-64.7"
 swbb = "SWBBiM Lat:25.3903, lon:-80.1715"
-nump = "NUPMiM Lat:5.87 Lon:-162.13"
+nump = "NUMPiM Lat:5.87 Lon:-162.13"
 copm = "COPMiM Lat:5.87, Lon:-162.13"
-bofp = "iBOFP Lat:-17.5, Lon:-149.83"
-lira = "iLIRA Lat:-21.24, Lon:-159.83"
+bofp = "BOFPiM Lat:-17.5, Lon:-149.83"
+lira = "LIRAiM Lat:-21.24, Lon:-159.83"
 
 par(mfrow = c(4, 1), omi = c(0.5, 0.3, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
 # SST
 plot(sst$x, sst_c, type = "l", frame.plot = F, xaxt = "n", xlab = "", lwd = 2,
-     ylab = "iCESM SST (C)", xpd = NA, main = lira, 
+     ylab = "iCESM SST (C)", xpd = NA, main = bofp, 
      cex.lab = 1.5, cex.axis = 1.5)
 # SSS
 plot(sss$x, sss$y, type = "l", frame.plot = F, xlab = "", xaxt = "n",
@@ -84,7 +84,7 @@ plot(binned_proxy$x, binned_proxy$y, type = "l", frame.plot = F,
 #### Plot pseudo vs. proxy correlation ####
 (cor = cor.test(coral, binned_proxy$y))
 plot(coral, binned_proxy$y, pch = 16, xlab = "Pseudo-coral",
-     ylab = "Proxy Data", main = c("r = 0.10", "p = 0.25"))
+     ylab = "Proxy Data", main = c("r = -0.10", "p = 0.25"))
 
 #
 ##############################################################################
