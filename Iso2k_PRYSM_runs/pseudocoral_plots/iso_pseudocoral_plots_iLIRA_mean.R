@@ -2,13 +2,13 @@ library(geoChronR)
 
 #### Import iCESM and observational data ####
 setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/data/iCESM_full_forcing_afedits")
-sst = read.csv("ssta_BOFPiM_binned.csv", head = T)
-sss = read.csv("sssa_BOFPiM_binned.csv", head = T)
+sst = read.csv("ssta_LIRAiM_binned.csv", head = T)
+sss = read.csv("sssa_LIRAiM_binned.csv", head = T)
 #sst_obs = read.csv("binned_BermudaSST.csv", head = T)
 
 # Import PRYSM pseudocoral result
 setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs/results")
-coral = read.csv("BOFPiM_pseudocoral.csv", head = F)
+coral = read.csv("LIRAiM_pseudocoral.csv", head = F)
 coral = as.vector(unlist(coral))
 #coral_obs = read.csv("pseudocoral_obs.csv", head = F)
 #coral_obs = as.vector(unlist(coral_obs))
@@ -31,7 +31,7 @@ load("iso2k1_0_0.RData")
 rm(D, TS)
 # Apply geoChronR function to extract primary TS
 bermuda = sTS[which(pullTsVariable(sTS, 
-                                      variable = "dataSetName") == "CO98BOFP")]
+                                      variable = "dataSetName") == "CO04LIRA")]
 bermuda = bermuda[[1]] # This is the d18O subset
 
 # Plot raw proxy data
@@ -60,13 +60,13 @@ kube = "KUBEiM Lat:32.467, Lon:-64.7"
 swbb = "SWBBiM Lat:25.3903, lon:-80.1715"
 nump = "NUMPiM Lat:5.87 Lon:-162.13"
 copm = "COPMiM Lat:5.87, Lon:-162.13"
-bofp = "BOFPiM Lat:-17.5, Lon:-149.83"
+bofp = "LIRAiM Lat:-17.5, Lon:-149.83"
 lira = "LIRAiM Lat:-21.24, Lon:-159.83"
 
 par(mfrow = c(4, 1), omi = c(0.5, 0.3, 0, 0), mai = c(0.2, 0.5, 0.2, 0))
 # SST
 plot(sst$x, sst_c, type = "l", frame.plot = F, xaxt = "n", xlab = "", lwd = 2,
-     ylab = "iCESM SST (C)", xpd = NA, main = bofp, 
+     ylab = "iCESM SST (C)", xpd = NA, main = lira, 
      cex.lab = 1.5, cex.axis = 1.5)
 # SSS
 plot(sss$x, sss$y, type = "l", frame.plot = F, xlab = "", xaxt = "n",

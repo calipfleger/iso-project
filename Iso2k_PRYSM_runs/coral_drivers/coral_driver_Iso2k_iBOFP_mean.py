@@ -17,7 +17,8 @@ from psm.aux_functions.analytical_err_simple import analytical_err_simple
 #====================================================================
 
 #Data directory
-datadir='./data/iCESM_full_forcing_afedits/'
+#datadir='./data/iCESM_full_forcing_afedits/'
+datadir = 'C:/Users/andre/Documents/GitHub/iso-project/Iso2k_PRYSM_runs/data/iCESM_full_forcing_afedits/'
 
 df = pd.read_csv(datadir + 'iBOFP_mean_afedit.csv', sep = ',')
 sst = np.array(df["TS"])
@@ -57,7 +58,7 @@ print('Preparing data...')
 # lat: convert (0: 180) to (-90: +90)
 
 # Enter your coordinates here:
-lon=210.17
+lon=-149.83
 lat=-17.5
 
 # make sure there are no negative-longitude coordinates: [0 to 360] only.
@@ -118,7 +119,7 @@ sigma=0.1
 coral_Xn=analytical_error(X,sigma)
 #====================================================================
 # Save coral timeseries fields as BOFPy arrays in current directory.
-outdir = './results/'
+outdir = 'C:/Users/andre/Documents/GitHub/iso-project/Iso2k_PRYSM_runs/results/'
 print('Saving time series...')
 np.save(outdir + "BOFPiM_coral_d18O.npy", coral)
 np.save(outdir + "BOFPiM_coral_age_perturbed.npy", Xp)
