@@ -15,6 +15,7 @@ binned_ann_recs = matrix(NA, length(binvec), length(ssta_m)+1)
 thisrec = na.omit(data.frame(year = time, val = ssta_m))
 
 binned_ann_recs = geoChronR::bin(thisrec$year, thisrec$val, binvec)
+binned_ann_recs$y = binned_ann_recs$y - mean(binned_ann_recs$y)
 
 write.csv(binned_ann_recs, "ssta_BOFPiM_binned.csv")
 
@@ -31,5 +32,6 @@ binned_ann_recs = matrix(NA, length(binvec), length(sssa_m)+1)
 thisrec = na.omit(data.frame(year = time, val = sssa_m))
 
 binned_ann_recs = geoChronR::bin(thisrec$year, thisrec$val, binvec)
+binned_ann_recs$y = binned_ann_recs$y - mean(binned_ann_recs$y)
 
 write.csv(binned_ann_recs, "sssa_BOFPiM_binned.csv")
