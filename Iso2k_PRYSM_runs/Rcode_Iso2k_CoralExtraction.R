@@ -70,11 +70,11 @@ ggplot() +
   geom_polygon(data = wrld_simpl, aes(x = long, y = lat, group = group), 
                fill = "grey", colour = "black", alpha = 0.2) +
   geom_point(data = allRecs, mapping = aes(x = lon, y = lat, 
-                                               shape = archive), color = "black", size = 4) +
+                                               shape = archive), color = "black", size = 5) +
   geom_point(data = allRecs, mapping = aes(x = lon, y = lat, 
-                                               shape = archive), color = "salmon", size = 3) +
+                                               shape = archive), color = "salmon", size = 4) +
   geom_point(data = completed, mapping = aes(x = lon, y = lat, 
-                                           shape = archive), color = "forest green", size = 3) +
+                                           shape = archive), color = "forest green", size = 4) +
   scale_shape_manual(values = shapes) + 
   # Removes Axes and labels
   scale_x_continuous(breaks = NULL) +
