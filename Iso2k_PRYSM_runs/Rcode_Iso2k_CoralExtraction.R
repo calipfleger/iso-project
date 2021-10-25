@@ -4,6 +4,7 @@ library(tidyverse)
 library(geoChronR)
 library(lubridate)
 library(rgdal)
+library(ggmap)
 
 
 #### Extracting Atlantic Annual Series ####
@@ -59,22 +60,27 @@ allRecs = as.data.frame(allRecs) %>%
 #
 #### Plot coral locations ####
 # Import completed location list
-setwd("C:/Users/andre/Box Sync/Konecky Lab/User Storage/Andrew Flaim")
+setwd("D:/Box/Box_Sync/Konecky Lab/User Storage/Andrew Flaim/Rcode/Data")
 completed = read.csv("old_iso2k_loc.csv", head = T)
 
 shapes = c("Coral" = 20, "GlacierIce" = 20, "Sclerosponge" = 19, "Wood" = 18,
            "LakeSediment" = 17, "Speleothem" = 17, "MolluskShells" = 19,
            "MarineSediment" = 8)
 
+# Import world oceans shp
+# setwd("D:/GitHub/iso-project/World_Seas_IHO_v3")
+# shp = readOGR("World_Seas_IHO_v3.shp")
+# shp_df = fortify(shp)
+
 ggplot() +
   geom_polygon(data = wrld_simpl, aes(x = long, y = lat, group = group), 
                fill = "grey", colour = "black", alpha = 0.2) +
   geom_point(data = allRecs, mapping = aes(x = lon, y = lat, 
-                                               shape = archive), color = "black", size = 5) +
+                                               shape = archive), color = "black", size = 7) +
   geom_point(data = allRecs, mapping = aes(x = lon, y = lat, 
-                                               shape = archive), color = "salmon", size = 4) +
+                                               shape = archive), color = "salmon", size = 6) +
   geom_point(data = completed, mapping = aes(x = lon, y = lat, 
-                                           shape = archive), color = "forest green", size = 4) +
+                                           shape = archive), color = "forest green", size = 6) +
   scale_shape_manual(values = shapes) + 
   # Removes Axes and labels
   scale_x_continuous(breaks = NULL) +
@@ -85,8 +91,9 @@ ggplot() +
         axis.ticks=element_blank(),
         panel.border = element_blank(),
         panel.grid.major = element_blank())
+#  geom_path(data = shp_df, x = shp_df$long, y = shp_df$lat, color = "blue")
 
 #
 #### Export coral dataframe ####
-setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs")
-write.csv(allRecs, "iso2k_corals.csv", row.names = F)
+#setwd("~/GitHub/iso-project/Iso2k_PRYSM_runs")
+#write.csv(allRecs, "iso2k_corals.csv", row.names = F)
