@@ -8,9 +8,11 @@ library(ncdf4.helpers)
 
 #
 #### Import iCESM data ####
-setwd("D:/GitHub/iso-project/TS_1850")
+#setwd("D:/GitHub/iso-project/TS_1850")
+setwd("~/GitHub/iso-project/TS_1850")               # Laptop
 sst = read.csv("TS_full1_clipped.csv", head = T)
-setwd("D:/GitHub/iso-project/d18osw_coral")
+#setwd("D:/GitHub/iso-project/d18osw_coral")
+setwd("~/GitHub/iso-project/d18osw_coral")          # Laptop
 d18Osw = read.csv("test_full_post1.csv", head = T)
 
 # Trim to uniform timespan
@@ -69,23 +71,62 @@ names(coral) = names(sst)
 coral.out = cbind(old.time, coral)
 names(coral.out)[1] = "time"
 #
+#### Bin PSM input and output to annual ####
+binvec =  seq(from = 1850, to = 2006, by = 1)
+binYears = rowMeans(cbind(binvec[-1], binvec[-length(binvec)]))
+binned_coral = matrix(NA, length(binYears), length(coral))
+binned_sst = matrix(NA, length(binYears), length(coral))
+binned_d18Osw = matrix(NA, length(binYears), length(coral))
+
+for(i in 1:(ncol(binned_coral))) {
+  thisrec = na.omit(data.frame(year = monthly, val = coral[,i]))
+  thisrec_sst = na.omit(data.frame(year = monthly, val = coral[,i]))
+  thisrec_d18Osw = na.omit(data.frame(year = monthly, val = coral[,i]))
+  binned_coral[,i] = geoChronR::bin(thisrec$year, thisrec$val, binvec)$y
+  binned_sst[,i] = geoChronR::bin(thisrec_sst$year, thisrec_sst$val, binvec)$y
+  binned_d18Osw[,i] = geoChronR::bin(thisrec_d18Osw$year, thisrec_d18Osw$val, binvec)$y
+}
+
 #### Export PSM output ####
 setwd("D:/GitHub/iso-project")
 write.csv(coral.out, "pseudocoral_1850-2005.csv", row.names = F)
 
 #
+#### Import and bin Iso2k records ####
+data("wrld_simpl", package = "maptools")
+# Load and extract Iso2k
+if (Sys.info()['sysname'] == "Darwin"){
+  setwd("~/Box Sync/Konecky Lab/User Storage/Andrew Flaim/Rcode/Iso2k") # MacOS
+} else if (Sys.info()['login'] == "andre"){
+  setwd("C:/Users/andre/Box Sync/Konecky Lab/User Storage/Andrew Flaim/Rcode/Iso2k") # Laptop
+} else{
+  setwd("D:/Box/Box_Sync/Konecky Lab/User Storage/Andrew Flaim/Rcode/Iso2k") # Desktop
+}
+
+load("iso2k1_0_0.RData")
+# Remove extraneous objects
+rm(D, TS)
+# Apply geoChronR function to extrat primary TS
+all_iso_ts = sTS[which(pullTsVariable(sTS, 
+                                      variable = "paleoData_iso2kPrimaryTimeseries") == "TRUE")]
+iso2k_coral = all_iso_ts[which(pullTsVariable(all_iso_ts,
+                                        variable = "archiveType") == "Coral")]
+
+CO06LIFI = 
 #### Plot inputs and pseudocorals ####
-par(mfrow = c(3, 1), mai = c(0.5,0.5,0.5,0.5))
-plot(monthly, sst[,1], type = "l", xlab = "", xaxt = "n", ylab = "",
+par(mfrow = c(4, 1), mai = c(0.5,0.5,0.5,0.5))
+plot(binYears, binned_sst[,1], type = "l", xlab = "", xaxt = "n", ylab = "",
      main = names(sst)[1], frame.plot = F)
 mtext(side = 2, line = 2.5, "SST (deg. C)")
-plot(monthly, d18Osw[,1], type = "l", xlab = "", xaxt = "n", ylab = "",
+plot(binYears, binned_d18Osw[,1], type = "l", xlab = "", xaxt = "n", ylab = "",
      frame.plot = F)
 mtext(side = 2, line = 2.5, "d18Osw (permil)")
-plot(monthly, coral[,1], type = "l", xlab = "", ylab = "",
+plot(binYears, binned_coral[,1], type = "l", xlab = "", ylab = "",
      frame.plot = F)
 mtext(side = 2, line = 2.5, "Pseudocoral d18O")
 mtext(side = 1, line = 2, "Year (CE)")
+plot(all_iso_ts[[24]][["year"]], all_iso_ts[[24]][["paleoData_values"]], type = "l",
+     frame.plot = F)
 #
 
 # Stack all pseudocorals
