@@ -80,8 +80,8 @@ binned_d18Osw = matrix(NA, length(binYears), length(coral))
 
 for(i in 1:(ncol(binned_coral))) {
   thisrec = na.omit(data.frame(year = monthly, val = coral[,i]))
-  thisrec_sst = na.omit(data.frame(year = monthly, val = coral[,i]))
-  thisrec_d18Osw = na.omit(data.frame(year = monthly, val = coral[,i]))
+  thisrec_sst = na.omit(data.frame(year = monthly, val = sst[,i]))
+  thisrec_d18Osw = na.omit(data.frame(year = monthly, val = d18Osw[,i]))
   binned_coral[,i] = geoChronR::bin(thisrec$year, thisrec$val, binvec)$y
   binned_sst[,i] = geoChronR::bin(thisrec_sst$year, thisrec_sst$val, binvec)$y
   binned_d18Osw[,i] = geoChronR::bin(thisrec_d18Osw$year, thisrec_d18Osw$val, binvec)$y
@@ -112,24 +112,32 @@ all_iso_ts = sTS[which(pullTsVariable(sTS,
 iso2k_coral = all_iso_ts[which(pullTsVariable(all_iso_ts,
                                         variable = "archiveType") == "Coral")]
 
-CO06LIFI = 
+CO06LIFI = na.omit(data.frame(year = iso2k_coral[[24]]$year,
+                              val = iso2k_coral[[24]]$paleoData_values))
+binvec =  seq(from = 1850, to = 2006, by = 1)
+binYears = rowMeans(cbind(binvec[-1], binvec[-length(binvec)]))
+binned_rec = geoChronR::bin(CO06LIFI$year, CO06LIFI$val, binvec)$y
+
+#
 #### Plot inputs and pseudocorals ####
-par(mfrow = c(4, 1), mai = c(0.5,0.5,0.5,0.5))
+cex = 2
+par(mfrow = c(4, 1), mai = c(0.5, 1,0.25,0.5))
 plot(binYears, binned_sst[,1], type = "l", xlab = "", xaxt = "n", ylab = "",
-     main = names(sst)[1], frame.plot = F)
-mtext(side = 2, line = 2.5, "SST (deg. C)")
+     frame.plot = F, cex.axis = cex, xlim = c(1850, 2000))
+mtext(side = 2, line = 3.5, "SST (deg. C)", cex = cex)
 plot(binYears, binned_d18Osw[,1], type = "l", xlab = "", xaxt = "n", ylab = "",
-     frame.plot = F)
-mtext(side = 2, line = 2.5, "d18Osw (permil)")
+     frame.plot = F, cex.axis = cex, xlim = c(1850, 2000))
+mtext(side = 2, line = 3.5, "d18Osw (permil)", cex = cex)
 plot(binYears, binned_coral[,1], type = "l", xlab = "", ylab = "",
-     frame.plot = F)
-mtext(side = 2, line = 2.5, "Pseudocoral d18O")
-mtext(side = 1, line = 2, "Year (CE)")
-plot(all_iso_ts[[24]][["year"]], all_iso_ts[[24]][["paleoData_values"]], type = "l",
-     frame.plot = F)
+     frame.plot = F, xaxt = "n", cex.axis = cex, xlim = c(1850, 2000))
+mtext(side = 2, line = 3.5, "Pseudocoral d18O", cex = cex)
+plot(iso2k_coral[[24]][["year"]], iso2k_coral[[24]][["paleoData_values"]], type = "l",
+     frame.plot = F, xlim = c(1850, 2000), xlab = "", ylab = "", cex.axis = cex)
+mtext(side = 1, line = 2.5, "Year (CE)", cex = cex)
+mtext(side = 2, line = 3.5, "CO06LIFI d18O", cex = cex)
 #
 
-# Stack all pseudocorals
+#### Stack all pseudocorals ####
 for (i in 1:ncol(coral)){
   plot(monthly, coral[,i], type = "l", frame.plot = F, axes = F, xlab = "", 
        ylab = "", ylim = range(coral))
